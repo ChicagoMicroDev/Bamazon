@@ -22,7 +22,10 @@ connection.connect(function (err) {
 
 
 
+
+
 function startApp() {
+    displayInventory();
     inquirer.prompt([
         {
             type: "input",
@@ -57,10 +60,38 @@ function howMany(itemNum) {
 function update(itemNum, quantity){
     connection.query("SELECT * FROM products WHERE item_id = ?",itemNum, function(err, results) {
         if (err) throw err;
-        console.log(results)
+        console.log(results);
         //if quantity is less then results then
-        if(quantity < results){
-
+        if(quantity > results){
+            console.log("Hey we have the item" )
+        }else {
+            console.log("We're out of the particular product")
         }
 })
 }
+function displayInventory() {
+    // console.log('___ENTER displayInventory___');
+
+    // Construct the db query string
+    queryStr = 'SELECT * FROM products';
+
+    // Make the db query
+    connection.query(queryStr, function(err, data) {
+        if (err) throw err;
+
+        console.log('Existing Inventory: ');
+        console.log('...................\n');
+
+        var strOut = '';
+        for (var i = 0; i < data.length; i++) {
+            strOut = '';
+            strOut += 'Item ID: ' + data[i].item_id + '  //  ';
+            strOut += 'Product Name: ' + data[i].product_name + '  //  ';
+            strOut += 'Department: ' + data[i].department_name + '  //  ';
+            strOut += 'Price: $' + data[i].price + '\n';
+
+            console.log(strOut);
+        }
+    })
+}
+
